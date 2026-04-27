@@ -1,0 +1,768 @@
+/* ================================================================
+   STYLE.CSS — Student Life Dashboard
+   ----------------------------------------------------------------
+   HOW THIS FILE IS ORGANIZED:
+   1. CSS Variables (colors, sizes) — easy to change theme here
+   2. Reset & Base styles
+   3. Sidebar
+   4. Main content area
+   5. Section layouts
+   6. Cards
+   7. Forms & Inputs
+   8. Task list styles
+   9. Homework list styles
+  10. Pomodoro Timer styles
+  11. Daily Planner styles
+  12. Chat / Assistant styles
+  13. Dashboard stats
+  14. Animations
+  15. Responsive (mobile) styles
+================================================================ */
+
+/* ── 1. CSS VARIABLES ─────────────────────────────────────────
+   Think of variables as settings. Change a value here and it
+   updates everywhere that variable is used. */
+:root {
+  /* Light Mode Colors */
+  --bg-page:       #f0ede8;
+  --bg-sidebar:    #1a1a2e;
+  --bg-card:       #ffffff;
+  --bg-input:      #f7f5f2;
+
+  --text-primary:  #1c1c2e;
+  --text-secondary:#5a5a72;
+  --text-sidebar:  #c8c8e0;
+  --text-on-accent:#ffffff;
+
+  --accent:        #e06c3a;   /* warm orange accent */
+  --accent-hover:  #c8582a;
+  --accent-light:  #fdeee6;
+
+  --success:       #3abf7e;
+  --danger:        #e04a4a;
+  --warning:       #e0a43a;
+  --info:          #3a8be0;
+
+  --border:        #e4e0da;
+  --shadow:        0 4px 24px rgba(0,0,0,0.07);
+  --shadow-hover:  0 8px 32px rgba(0,0,0,0.12);
+
+  --sidebar-width: 230px;
+  --radius:        14px;
+  --radius-sm:     8px;
+
+  /* Font families */
+  --font-heading:  'Syne', sans-serif;
+  --font-body:     'DM Sans', sans-serif;
+
+  /* Transition speed for animations */
+  --transition:    0.25s ease;
+}
+
+/* ── Dark Mode: overrides the variables above ── */
+body.dark-mode {
+  --bg-page:       #0f0f1a;
+  --bg-sidebar:    #07070f;
+  --bg-card:       #1a1a2e;
+  --bg-input:      #12121f;
+
+  --text-primary:  #e8e8f4;
+  --text-secondary:#8888a8;
+  --text-sidebar:  #9090b8;
+
+  --accent:        #ff7d4a;
+  --accent-hover:  #ff6030;
+  --accent-light:  #2a1810;
+
+  --border:        #2a2a42;
+  --shadow:        0 4px 24px rgba(0,0,0,0.3);
+  --shadow-hover:  0 8px 32px rgba(0,0,0,0.5);
+}
+
+/* ── 2. RESET & BASE ──────────────────────────────────────────
+   Clears default browser styling and sets sensible defaults. */
+*, *::before, *::after {
+  box-sizing: border-box;   /* padding included in element width */
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  display: flex;              /* sidebar + main side by side */
+  min-height: 100vh;
+  transition: background var(--transition), color var(--transition);
+}
+
+/* ── 3. SIDEBAR ───────────────────────────────────────────────*/
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;   /* stack brand / nav / footer */
+  padding: 24px 16px;
+  position: fixed;          /* stays in place while content scrolls */
+  top: 0; left: 0;
+  height: 100vh;
+  z-index: 100;
+  transition: transform var(--transition);
+  overflow-y: auto;
+}
+
+/* Brand / Logo area */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 24px;
+}
+.brand-icon { font-size: 1.6rem; }
+.brand-name {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+/* Nav buttons */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;              /* fills available space */
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--text-sidebar);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background var(--transition), color var(--transition);
+}
+.nav-btn:hover {
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+}
+.nav-btn.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+/* Footer with theme toggle */
+.sidebar-footer {
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.theme-toggle {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-sidebar);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background var(--transition);
+}
+.theme-toggle:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+/* Hamburger button (hidden on desktop, shown on mobile) */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 16px; left: 16px;
+  z-index: 200;
+  background: var(--bg-sidebar);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  width: 42px; height: 42px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── 4. MAIN CONTENT ──────────────────────────────────────────*/
+.main-content {
+  margin-left: var(--sidebar-width);   /* leave room for sidebar */
+  flex: 1;
+  padding: 40px 36px;
+  max-width: 960px;
+}
+
+/* ── 5. SECTIONS ──────────────────────────────────────────────
+   Each section is hidden by default; only .active is shown. */
+.section { display: none; animation: fadeIn 0.3s ease; }
+.section.active { display: block; }
+
+.section-header { margin-bottom: 28px; }
+.section-header h1 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.subtitle {
+  color: var(--text-secondary);
+  margin-top: 6px;
+  font-size: 0.95rem;
+}
+
+/* ── 6. CARDS ─────────────────────────────────────────────────
+   White boxes that group related content. */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  transition: box-shadow var(--transition);
+}
+.card:hover { box-shadow: var(--shadow-hover); }
+.card h3 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+/* ── 7. FORMS & INPUTS ────────────────────────────────────────*/
+/* A row of inputs that sit side-by-side */
+.input-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+/* Stack rows vertically */
+.input-col { display: flex; flex-direction: column; gap: 10px; }
+
+.input-field {
+  flex: 1;
+  min-width: 140px;
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  transition: border-color var(--transition);
+  outline: none;
+}
+.input-field:focus { border-color: var(--accent); }
+.input-field::placeholder { color: var(--text-secondary); opacity: 0.7; }
+
+.select-field {
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+.btn-secondary {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover { background: var(--border); }
+.btn-ghost {
+  background: none;
+  color: var(--text-secondary);
+}
+.btn-ghost:hover { color: var(--text-primary); }
+
+/* Small icon button (used for delete) */
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background var(--transition);
+  color: var(--text-secondary);
+}
+.btn-icon:hover { background: var(--border); color: var(--danger); }
+
+/* Filter row (above task list) */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.filter-btn {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.filter-btn:hover, .filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ── 8. TASK LIST ─────────────────────────────────────────────*/
+.task-list, .hw-list, .planner-list, .snapshot-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  transition: all var(--transition);
+  animation: slideIn 0.25s ease;
+}
+.task-item:hover { border-color: var(--accent); }
+
+/* Checkbox */
+.task-item input[type="checkbox"] {
+  width: 18px; height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Task text */
+.task-text {
+  flex: 1;
+  font-size: 0.92rem;
+  transition: color var(--transition);
+}
+.task-item.completed .task-text {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* Category badge */
+.task-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.badge-School   { background: #dbeafe; color: #1e40af; }
+.badge-Personal { background: #dcfce7; color: #166534; }
+.badge-Urgent   { background: #fee2e2; color: #991b1b; }
+
+body.dark-mode .badge-School   { background: #1e3a5f; color: #93c5fd; }
+body.dark-mode .badge-Personal { background: #14402a; color: #86efac; }
+body.dark-mode .badge-Urgent   { background: #4a1414; color: #fca5a5; }
+
+/* Empty state message */
+.empty-msg {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 16px;
+  opacity: 0.7;
+}
+
+/* ── 9. HOMEWORK LIST ─────────────────────────────────────────*/
+.hw-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  animation: slideIn 0.25s ease;
+  transition: border-color var(--transition);
+}
+.hw-item:hover { border-color: var(--accent); }
+
+/* Red highlight for overdue assignments */
+.hw-item.overdue {
+  border-color: var(--danger);
+  background: rgba(224,74,74,0.06);
+}
+
+.hw-info { flex: 1; }
+.hw-subject {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--accent);
+}
+.hw-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.hw-due {
+  font-size: 0.8rem;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.hw-item.overdue .hw-due { color: var(--danger); font-weight: 600; }
+
+/* ── 10. POMODORO TIMER ───────────────────────────────────────*/
+.timer-card {
+  text-align: center;
+  position: relative;
+}
+
+/* Mode toggle buttons */
+.timer-modes {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.mode-btn {
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 8px 20px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  color: var(--text-secondary);
+}
+.mode-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* SVG ring sits behind the number display */
+.timer-ring {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -70px);
+  pointer-events: none;
+}
+.ring-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 8;
+}
+.ring-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 1s linear;
+}
+
+/* Big countdown number */
+.timer-display {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -2px;
+  margin: 24px 0 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.session-info {
+  margin-top: 20px;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+/* ── 11. DAILY PLANNER ────────────────────────────────────────*/
+.planner-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  animation: slideIn 0.25s ease;
+}
+.planner-time {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--accent);
+  min-width: 56px;
+}
+.planner-activity {
+  flex: 1;
+  font-size: 0.92rem;
+}
+
+/* ── 12. CHAT / ASSISTANT ─────────────────────────────────────*/
+.chat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Scrollable message area */
+.chat-messages {
+  height: 360px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 4px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Individual chat bubbles */
+.chat-bubble {
+  max-width: 78%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  animation: bubbleIn 0.2s ease;
+}
+/* Bot messages on the left */
+.chat-bubble.bot {
+  background: var(--accent-light);
+  color: var(--text-primary);
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  border: 1px solid var(--border);
+}
+/* User messages on the right */
+.chat-bubble.user {
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+}
+
+/* Quick prompt suggestion buttons */
+.chat-suggestions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.suggestion-btn {
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.suggestion-btn:hover {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* ── 13. DASHBOARD STATS ──────────────────────────────────────*/
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+.stat-icon { font-size: 1.8rem; flex-shrink: 0; }
+.stat-number {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Progress bar */
+.progress-bar-wrap {
+  background: var(--bg-input);
+  border-radius: 20px;
+  height: 12px;
+  overflow: hidden;
+  margin: 12px 0 8px;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--warning));
+  border-radius: 20px;
+  transition: width 0.6s ease;
+}
+.progress-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Snapshot list (urgent tasks on dashboard) */
+.snapshot-list .task-snippet {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  border: 1px solid var(--border);
+}
+
+/* ── 14. ANIMATIONS ───────────────────────────────────────────*/
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bubbleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── 15. RESPONSIVE (MOBILE) ──────────────────────────────────
+   When the screen is smaller than 768px, we stack things. */
+@media (max-width: 768px) {
+  /* Sidebar hides off-screen by default on mobile */
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  /* When sidebar has .open class (toggled by JS), it slides in */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Show hamburger button on mobile */
+  .hamburger {
+    display: flex;
+  }
+
+  /* Main content takes full width on mobile */
+  .main-content {
+    margin-left: 0;
+    padding: 70px 18px 24px;
+  }
+
+  .section-header h1 { font-size: 1.5rem; }
+  .timer-display { font-size: 3rem; }
+
+  .input-row { flex-direction: column; }
+  .input-row .btn { width: 100%; }
+
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
