@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Life Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: Syne for headings, DM Sans for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ============================================================
+       SIDEBAR NAVIGATION
+       The sidebar lets the user switch between dashboard sections.
+  ============================================================ -->
+  <aside class="sidebar" id="sidebar">
+    <!-- App logo / brand name -->
+    <div class="sidebar-brand">
+      <span class="brand-icon">📚</span>
+      <span class="brand-name">StudySpace</span>
+    </div>
+
+    <!-- Navigation links — each data-section value matches a section id -->
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-section="dashboard">
+        <span class="nav-icon">🏠</span> Dashboard
+      </button>
+      <button class="nav-btn" data-section="tasks">
+        <span class="nav-icon">✅</span> Tasks
+      </button>
+      <button class="nav-btn" data-section="homework">
+        <span class="nav-icon">📝</span> Homework
+      </button>
+      <button class="nav-btn" data-section="timer">
+        <span class="nav-icon">⏱️</span> Pomodoro
+      </button>
+      <button class="nav-btn" data-section="planner">
+        <span class="nav-icon">📅</span> Daily Planner
+      </button>
+      <button class="nav-btn" data-section="assistant">
+        <span class="nav-icon">🤖</span> Assistant
+      </button>
+    </nav>
+
+    <!-- Dark mode toggle at the bottom of the sidebar -->
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle">
+        <span id="themeIcon">🌙</span>
+        <span id="themeLabel">Dark Mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile hamburger menu button (shown only on small screens) -->
+  <button class="hamburger" id="hamburger">☰</button>
+
+  <!-- ============================================================
+       MAIN CONTENT AREA
+       All sections live here; only one is visible at a time.
+  ============================================================ -->
+  <main class="main-content">
+
+    <!-- ── DASHBOARD OVERVIEW ────────────────────────────────── -->
+    <section class="section active" id="dashboard">
+      <header class="section-header">
+        <h1>Good <span id="timeGreeting">morning</span>! 👋</h1>
+        <p class="subtitle" id="motivationalMsg">Loading your message…</p>
+      </header>
+
+      <!-- Stat cards row -->
+      <div class="stats-grid">
+        <div class="stat-card" id="statTasks">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <span class="stat-number" id="statTaskCount">0</span>
+            <span class="stat-label">Tasks Today</span>
+          </div>
+        </div>
+        <div class="stat-card" id="statHomework">
+          <div class="stat-icon">📝</div>
+          <div class="stat-info">
+            <span class="stat-number" id="statHWCount">0</span>
+            <span class="stat-label">Assignments Due</span>
+          </div>
+        </div>
+        <div class="stat-card" id="statProgress">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-info">
+            <span class="stat-number" id="statPercent">0%</span>
+            <span class="stat-label">Tasks Complete</span>
+          </div>
+        </div>
+        <div class="stat-card" id="statOverdue">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-info">
+            <span class="stat-number" id="statOverdueCount">0</span>
+            <span class="stat-label">Overdue Items</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress bar for task completion -->
+      <div class="card">
+        <h3>Task Progress</h3>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+        <p class="progress-label" id="progressLabel">0 of 0 tasks completed</p>
+      </div>
+
+      <!-- Quick snapshot of urgent tasks -->
+      <div class="card">
+        <h3>🔥 Urgent Tasks Snapshot</h3>
+        <ul class="snapshot-list" id="urgentSnapshot">
+          <li class="empty-msg">No urgent tasks — enjoy the calm! 😊</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── TASK MANAGER ──────────────────────────────────────── -->
+    <section class="section" id="tasks">
+      <header class="section-header">
+        <h1>Task Manager</h1>
+        <p class="subtitle">Stay on top of everything</p>
+      </header>
+
+      <!-- Form to add a new task -->
+      <div class="card">
+        <h3>Add New Task</h3>
+        <div class="input-row">
+          <!-- Text input for task name -->
+          <input type="text" id="taskInput" placeholder="What needs to be done?" class="input-field" />
+          <!-- Dropdown to pick category -->
+          <select id="taskCategory" class="select-field">
+            <option value="School">🎓 School</option>
+            <option value="Personal">🙂 Personal</option>
+            <option value="Urgent">🔥 Urgent</option>
+          </select>
+          <button class="btn btn-primary" onclick="addTask()">Add Task</button>
+        </div>
+      </div>
+
+      <!-- Filter buttons -->
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="filterTasks('All', this)">All</button>
+        <button class="filter-btn" onclick="filterTasks('School', this)">🎓 School</button>
+        <button class="filter-btn" onclick="filterTasks('Personal', this)">🙂 Personal</button>
+        <button class="filter-btn" onclick="filterTasks('Urgent', this)">🔥 Urgent</button>
+      </div>
+
+      <!-- List where tasks appear -->
+      <div class="card">
+        <ul class="task-list" id="taskList">
+          <li class="empty-msg">No tasks yet. Add one above! ✨</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── HOMEWORK TRACKER ──────────────────────────────────── -->
+    <section class="section" id="homework">
+      <header class="section-header">
+        <h1>Homework Tracker</h1>
+        <p class="subtitle">Never miss a deadline</p>
+      </header>
+
+      <!-- Form to add homework -->
+      <div class="card">
+        <h3>Add Assignment</h3>
+        <div class="input-col">
+          <div class="input-row">
+            <input type="text" id="hwSubject" placeholder="Subject (e.g. Math)" class="input-field" />
+            <input type="text" id="hwDesc" placeholder="Description (e.g. Chapter 5 exercises)" class="input-field" />
+          </div>
+          <div class="input-row">
+            <input type="date" id="hwDue" class="input-field" />
+            <button class="btn btn-primary" onclick="addHomework()">Add Assignment</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Homework list -->
+      <div class="card">
+        <ul class="hw-list" id="hwList">
+          <li class="empty-msg">No assignments yet. Enjoy the free time! 🎉</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── POMODORO TIMER ────────────────────────────────────── -->
+    <section class="section" id="timer">
+      <header class="section-header">
+        <h1>Pomodoro Timer</h1>
+        <p class="subtitle">Focus in bursts, rest between them</p>
+      </header>
+
+      <div class="card timer-card">
+        <!-- Mode switcher: Focus or Break -->
+        <div class="timer-modes">
+          <button class="mode-btn active" id="modeFocus" onclick="setMode('focus')">🎯 Focus (25 min)</button>
+          <button class="mode-btn" id="modeBreak" onclick="setMode('break')">☕ Break (5 min)</button>
+        </div>
+
+        <!-- Big countdown display -->
+        <div class="timer-display" id="timerDisplay">25:00</div>
+
+        <!-- SVG ring progress around the timer -->
+        <svg class="timer-ring" viewBox="0 0 200 200">
+          <circle class="ring-bg" cx="100" cy="100" r="90" />
+          <circle class="ring-fill" id="timerRing" cx="100" cy="100" r="90"
+            stroke-dasharray="565" stroke-dashoffset="0" />
+        </svg>
+
+        <!-- Control buttons -->
+        <div class="timer-controls">
+          <button class="btn btn-primary" id="timerStartBtn" onclick="startTimer()">▶ Start</button>
+          <button class="btn btn-secondary" onclick="pauseTimer()">⏸ Pause</button>
+          <button class="btn btn-ghost" onclick="resetTimer()">↺ Reset</button>
+        </div>
+
+        <!-- Session counter -->
+        <p class="session-info">Sessions completed today: <strong id="sessionCount">0</strong></p>
+      </div>
+    </section>
+
+    <!-- ── DAILY PLANNER ────────────────────────────────────── -->
+    <section class="section" id="planner">
+      <header class="section-header">
+        <h1>Daily Planner</h1>
+        <p class="subtitle">Plan your day, own your time</p>
+      </header>
+
+      <!-- Add time slot form -->
+      <div class="card">
+        <h3>Add Time Slot</h3>
+        <div class="input-row">
+          <input type="time" id="slotTime" class="input-field" />
+          <input type="text" id="slotActivity" placeholder="Activity (e.g. Study Math)" class="input-field" />
+          <button class="btn btn-primary" onclick="addSlot()">Add Slot</button>
+        </div>
+      </div>
+
+      <!-- Today's schedule -->
+      <div class="card">
+        <h3>📅 Today's Schedule</h3>
+        <ul class="planner-list" id="plannerList">
+          <li class="empty-msg">No slots yet. Plan your day! 📆</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── SMART ASSISTANT ──────────────────────────────────── -->
+    <section class="section" id="assistant">
+      <header class="section-header">
+        <h1>Smart Assistant</h1>
+        <p class="subtitle">Your personal study helper</p>
+      </header>
+
+      <div class="card chat-card">
+        <!-- Chat message area -->
+        <div class="chat-messages" id="chatMessages">
+          <!-- Welcome message shown on load (added by JS) -->
+        </div>
+
+        <!-- Suggested quick prompts -->
+        <div class="chat-suggestions">
+          <button class="suggestion-btn" onclick="sendSuggestion('What should I do?')">What should I do?</button>
+          <button class="suggestion-btn" onclick="sendSuggestion('Do I have homework?')">Do I have homework?</button>
+          <button class="suggestion-btn" onclick="sendSuggestion('Start studying')">Start studying</button>
+          <button class="suggestion-btn" onclick="sendSuggestion('How am I doing?')">How am I doing?</button>
+        </div>
+
+        <!-- Input row for typing -->
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="Ask me anything…" class="input-field"
+            onkeydown="if(event.key==='Enter') sendChat()" />
+          <button class="btn btn-primary" onclick="sendChat()">Send</button>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- end .main-content -->
+
+  <!-- Load the JavaScript file last so HTML is ready when it runs -->
+  <script src="script.js"></script>
+</body>
+</html>
